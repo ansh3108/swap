@@ -1,24 +1,45 @@
 package com.example;
 
-import net.fabricmc.api.ModInitializer;
+import com.example.mixin.PlayerInventoryAccessor;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.slot.SlotActionType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class Swap implements ClientModInitializer {
+    private Item lastItem = null;
 
-public class Swap implements ModInitializer {
-	public static final String MOD_ID = "swap";
+    @Override
+    public void onInitializeClient() {
+        ClientTickEvents.END_CLIENT_TICK.register(this::onTick);
+    }
 
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    private void onTick(MinecraftClient client) {
+        if (client.player == null || client.interactionManager == null) return;
 
-	@Override
-	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+        PlayerInventory inv = client.player.getInventory();
+        int selected = ((PlayerInventoryAccessor) inv).getSelectedSlot();
+        ItemStack current = inv.getStack(selected);
 
-		LOGGER.info("Hello Fabric world!");
-	}
+        if (lastItem != null && current.isEmpty()) {
+            for (int i = 9; i < 36; i++) {
+                ItemStack stack = client.player.playerScreenHandler.getSlot(i).getStack();
+                if (stack.isOf(lastItem)) {
+                    client.interactionManager.clickSlot(
+                        client.player.playerScreenHandler.syncId,
+                        i,
+                        selected,
+                        SlotActionType.SWAP,
+                        client.player
+                    );
+                    break;
+                }
+            }
+        }
+
+        lastItem = current.isEmpty() ? null : current.getItem();
+    }
 }
