@@ -24,10 +24,16 @@ public class Swap implements ClientModInitializer {
         int selected = ((PlayerInventoryAccessor) inv).getSelectedSlot();
         ItemStack current = inv.getStack(selected);
 
-        if (lastItem != null && current.isEmpty()) {
+        boolean isNearlyBroken = current.isDamageable() && (current.getMaxDamage() - current.getDamage() <= 2);
+        boolean needsSwap = current.isEmpty() || isNearlyBroken;
+
+        if (lastItem != null && needsSwap) {
             for (int i = 9; i < 36; i++) {
                 ItemStack stack = client.player.playerScreenHandler.getSlot(i).getStack();
-                if (stack.isOf(lastItem)) {
+                
+                boolean isSafeReplacement = !stack.isDamageable() || (stack.getMaxDamage() - stack.getDamage() > 2);
+
+                if (stack.isOf(lastItem) && isSafeReplacement) {
                     client.interactionManager.clickSlot(
                         client.player.playerScreenHandler.syncId,
                         i,
