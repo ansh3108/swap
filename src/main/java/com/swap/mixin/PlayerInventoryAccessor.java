@@ -1,4 +1,4 @@
-package com.example.mixin;
+package com.swap.mixin;
 
 import net.minecraft.entity.player.PlayerInventory;
 import org.spongepowered.asm.mixin.Mixin;

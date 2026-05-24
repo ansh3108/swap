@@ -1,31 +1,28 @@
 {
-	"schemaVersion": 1,
-	"id": "swap",
-	"version": "${version}",
-	"name": "swap",
-	"description": "This is an example description! Tell everyone what your mod is about!",
-	"authors": [
-		"Me!"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/swap/icon.png",
-	"environment": "*",
-	"entrypoints": {
+  "schemaVersion": 1,
+  "id": "swap",
+  "version": "1.0.0",
+  "name": "Smart Swap",
+  "description": "Automatically replaces broken tools and depleted blocks.",
+  "authors": [
+    "Ansh Kumar"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/swap/icon.png",
+  "environment": "client",
+  "entrypoints": {
     "client": [
-      "com.example.Swap"
+      "com.swap.Swap"
     ]
   },
-	"mixins": [
-		"swap.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.19.2",
-		"minecraft": "~1.21.11",
-		"java": ">=21",
-		"fabric-api": "*"
-	}
+  "mixins": [
+    "swap.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
 }
