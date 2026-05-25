@@ -10,7 +10,9 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.StyleSpriteSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -57,10 +59,9 @@ public class Swap implements ClientModInitializer {
         if (lastItem != null && needsSwap) {
             for (int i = 9; i < 36; i++) {
                 ItemStack stack = client.player.playerScreenHandler.getSlot(i).getStack();
-                
                 boolean isSafeReplacement = !stack.isDamageable() || (stack.getMaxDamage() - stack.getDamage() > 2);
 
-                if (stack.isOf(lastItem) && isSafeReplacement) {
+                if (isSafeReplacement && isMatch(lastItem, stack)) {
                     client.interactionManager.clickSlot(
                         client.player.playerScreenHandler.syncId,
                         i,
@@ -75,7 +76,21 @@ public class Swap implements ClientModInitializer {
 
         lastItem = current.isEmpty() ? null : current.getItem();
     }
+
+    private boolean isMatch(Item previousItem, ItemStack candidate) {
+        if (candidate.isOf(previousItem)) return true;
+
+        ItemStack prevStack = previousItem.getDefaultStack();
+        
+        if (prevStack.isIn(ItemTags.PICKAXES) && candidate.isIn(ItemTags.PICKAXES)) return true;
+        if (prevStack.isIn(ItemTags.AXES) && candidate.isIn(ItemTags.AXES)) return true;
+        if (prevStack.isIn(ItemTags.SHOVELS) && candidate.isIn(ItemTags.SHOVELS)) return true;
+        if (prevStack.isIn(ItemTags.SWORDS) && candidate.isIn(ItemTags.SWORDS)) return true;
+        if (prevStack.isIn(ItemTags.HOES) && candidate.isIn(ItemTags.HOES)) return true;
+        if (prevStack.isIn(ItemTags.DIRT) && candidate.isIn(ItemTags.DIRT)) return true;
+        if (prevStack.isIn(ItemTags.PLANKS) && candidate.isIn(ItemTags.PLANKS)) return true;
+
+        return false;
+    }
 }
-
-
 
