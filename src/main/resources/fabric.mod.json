@@ -14,6 +14,9 @@
   "entrypoints": {
     "client": [
       "com.swap.Swap"
+    ],
+    "modmenu": [
+      "com.swap.ModMenuIntegration"
     ]
   },
   "mixins": [
